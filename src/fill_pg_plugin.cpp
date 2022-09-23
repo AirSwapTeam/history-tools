@@ -506,33 +506,33 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
         return true;
     }
 
-    bool received(get_blocks_result_v2& result) override {
-        return process_blocks_result(result, [this, &result](bool bulk) {
-            if (!result.block_header.empty())
-                receive_block(result.this_block->block_num, result.this_block->block_id, result.block_header);
-            if (!result.deltas.empty())
-                receive_deltas(result.this_block->block_num, result.deltas, bulk);
-            if (!result.traces.empty())
-                receive_traces(result.this_block->block_num, result.traces);
-        });
-    }
-
-    bool received(get_blocks_result_v1& result) override {
-        return process_blocks_result(result, [this, &result](bool bulk) {
-            if (result.block) {
-                const signed_block_header& header =
-                    std::visit([](const auto& v) -> const signed_block_header& { return v; }, result.block.value());
-                std::vector<char> data = eosio::convert_to_bin(header);
-                receive_block(
-                    result.this_block->block_num, result.this_block->block_id,
-                    eosio::as_opaque<signed_block_header>(eosio::input_stream{data}));
-            }
-            if (!result.deltas.empty())
-                receive_deltas(result.this_block->block_num, result.deltas, bulk);
-            if (!result.traces.empty())
-                receive_traces(result.this_block->block_num, result.traces);
-        });
-    }
+//    bool received(get_blocks_result_v2& result) override {
+//        return process_blocks_result(result, [this, &result](bool bulk) {
+//            if (!result.block_header.empty())
+//                receive_block(result.this_block->block_num, result.this_block->block_id, result.block_header);
+//            if (!result.deltas.empty())
+//                receive_deltas(result.this_block->block_num, result.deltas, bulk);
+//            if (!result.traces.empty())
+//                receive_traces(result.this_block->block_num, result.traces);
+//        });
+//    }
+//
+//    bool received(get_blocks_result_v1& result) override {
+//        return process_blocks_result(result, [this, &result](bool bulk) {
+//            if (result.block) {
+//                const signed_block_header& header =
+//                    std::visit([](const auto& v) -> const signed_block_header& { return v; }, result.block.value());
+//                std::vector<char> data = eosio::convert_to_bin(header);
+//                receive_block(
+//                    result.this_block->block_num, result.this_block->block_id,
+//                    eosio::as_opaque<signed_block_header>(eosio::input_stream{data}));
+//            }
+//            if (!result.deltas.empty())
+//                receive_deltas(result.this_block->block_num, result.deltas, bulk);
+//            if (!result.traces.empty())
+//                receive_traces(result.this_block->block_num, result.traces);
+//        });
+//    }
 
     bool received(get_blocks_result_v0& result) override {
         return process_blocks_result(result, [this, &result](bool bulk) {
@@ -614,7 +614,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
                         converter.to_sql_values(row.data, *type.as_struct(), values);
 
                     bool save = false;
-                    for (auto& account : account_filter){
+                    for (auto& account : account_filters){
                         
                         if (std::find(values.begin(), values.end(), account) != values.end()){
 

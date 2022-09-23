@@ -57,7 +57,7 @@ FetchContent_MakeAvailable(appbase)
 
 FetchContent_Declare(
     abieos
-    GIT_REPOSITORY https://github.com/AntelopeIO/abieos.git
+    GIT_REPOSITORY https://github.com/air-trade/abieos.git
     GIT_TAG main
 )
 FetchContent_MakeAvailable(abieos)

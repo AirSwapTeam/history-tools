@@ -81,7 +81,7 @@ inline std::string sql_str(const eosio::ship_protocol::recurse_transaction_trace
 }
 
 inline std::string sql_str(const eosio::ship_protocol::wasm_config& v) {
-    return sql_str(std::visit([](auto& x) { return x.id; }, v));
+    return sql_str(std::visit([](auto& x) { return x.max_mutable_global_bytes; }, v));
 }
 
 inline std::string sql_str(const __int128& v) {

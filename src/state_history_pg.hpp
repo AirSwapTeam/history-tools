@@ -26,6 +26,14 @@ inline abi_type* add_type(abi& a, std::vector<ship_protocol::recurse_transaction
     return &iter->second;
 }
 
+template <>
+inline abi_type* add_type(abi& a, std::vector<ship_protocol::wasm_config>*) {
+    abi_type& element_type =
+        a.abi_types.try_emplace("wasm_config", "wasm_config", abi_type::builtin{}, nullptr).first->second;
+    std::string name      = "wasm_config?";
+    auto [iter, inserted] = a.abi_types.try_emplace(name, name, abi_type::optional{&element_type}, optional_abi_serializer);
+    return &iter->second;
+}
 } // namespace eosio
 
 namespace state_history {
@@ -70,6 +78,10 @@ inline std::string sql_str(const eosio::float128& v) {
 
 inline std::string sql_str(const eosio::ship_protocol::recurse_transaction_trace& v) {
     return sql_str(std::visit([](auto& x) { return x.id; }, v.recurse));
+}
+
+inline std::string sql_str(const eosio::ship_protocol::wasm_config& v) {
+    return sql_str(std::visit([](auto& x) { return x.id; }, v));
 }
 
 inline std::string sql_str(const __int128& v) {

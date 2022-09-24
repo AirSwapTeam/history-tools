@@ -56,6 +56,18 @@ inline bool json_to_native(recurse_transaction_trace& obj, eosio::json_to_native
 inline void native_to_bin(const recurse_transaction_trace& obj, std::vector<char>& bin) { eosio::native_to_bin(obj.recurse, bin); }
 #endif
 
+#if 0
+inline bool bin_to_native(wasm_config& obj, eosio::bin_to_native_state& state, bool start) {
+    return eosio::bin_to_native(obj, state, start);
+}
+
+inline bool json_to_native(wasm_config& obj, eosio::json_to_native_state& state, eosio::event_type event, bool start) {
+    return eosio::json_to_native(obj, state, event, start);
+}
+
+inline void native_to_bin(const wasm_config& obj, std::vector<char>& bin) { eosio::native_to_bin(obj, bin); }
+#endif
+
 inline void check_variant(eosio::input_stream& bin, const eosio::abi_type& type, uint32_t expected) {
     using namespace std::literals;
     uint32_t index;

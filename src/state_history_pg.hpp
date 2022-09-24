@@ -30,7 +30,7 @@ template <>
 inline abi_type* add_type(abi& a, std::vector<ship_protocol::wasm_config>*) {
     abi_type& element_type =
         a.abi_types.try_emplace("wasm_config", "wasm_config", abi_type::builtin{}, nullptr).first->second;
-    std::string name      = "wasm_config?";
+    std::string name      = "wasm_config&";
     auto [iter, inserted] = a.abi_types.try_emplace(name, name, abi_type::optional{&element_type}, optional_abi_serializer);
     return &iter->second;
 }

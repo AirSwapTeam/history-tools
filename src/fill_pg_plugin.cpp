@@ -444,6 +444,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
         bool large_deltas = false;
         bool forks        = false;
         auto deltas_size  = num_bytes(result.deltas);
+        ilog("delta size -> ${b}", ("b", deltas_size));
 
         if (!bulk && deltas_size >= 10 * 1024 * 1024) {
             ilog("large deltas size: ${s}", ("s", uint64_t(deltas_size)));

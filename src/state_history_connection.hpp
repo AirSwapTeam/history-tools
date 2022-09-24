@@ -119,9 +119,12 @@ struct connection : std::enable_shared_from_this<connection> {
     bool receive_result(const std::shared_ptr<flat_buffer>& p) {
         auto                         data = p->data();
         input_buffer                 bin{(const char*)data.data(), (const char*)data.data() + data.size()};
-        eosio::ship_protocol::result result;
+//        eosio::ship_protocol::result result;
+        eosio::ship_protocol::get_blocks_result_v0 result;
         from_bin(result, bin);
-        return callbacks && std::visit([&](auto& r) { return callbacks->received(r); }, result);
+        if (!result.this_block)
+            return true;
+        return callbacks && callbacks->received(result);
     }
 
     void request_blocks(uint32_t start_block_num, const std::vector<eosio::ship_protocol::block_position>& positions) {

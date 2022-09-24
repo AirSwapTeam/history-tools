@@ -169,6 +169,7 @@ template<> inline constexpr type_names names_for<eosio::bytes>                  
 template<> inline constexpr type_names names_for<eosio::symbol>                                   = type_names{"symbol","varchar(10)"};
 template<> inline constexpr type_names names_for<eosio::ship_protocol::transaction_status>        = type_names{"transaction_status","transaction_status_type"};
 template<> inline constexpr type_names names_for<eosio::ship_protocol::recurse_transaction_trace> = type_names{"recurse_transaction_trace","varchar"};
+template<> inline constexpr type_names names_for<eosio::ship_protocol::wasm_config>               = type_names{"wasm_config","varchar"};
 // clang-format on
 
 } // namespace pg

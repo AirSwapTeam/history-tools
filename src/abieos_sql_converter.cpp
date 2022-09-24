@@ -86,8 +86,6 @@ get_field_def(std::string schema_name, const eosio::abi_field& field, const abie
     }
     else {
         auto abi_type_name = type->name;
-        cout << field.name <<"\n";
-
         auto it            = basic_converters.find(abi_type_name);
         if (it != basic_converters.end()) {
             std::string type_name = it->second.name;

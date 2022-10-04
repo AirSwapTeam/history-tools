@@ -571,7 +571,9 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
     }
 
     void close_streams() {
+        ilog("close streams");
         if (table_streams.empty())
+            ilog("table streams is empty");
             return;
         flush_streams();
 

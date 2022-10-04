@@ -148,7 +148,7 @@ struct connection : std::enable_shared_from_this<connection> {
             nodeos_start = 0;
 
         auto start_block = std::max(start_block_num, nodeos_start);
-        ilog("start block -> ${b}", ("b", start_block)))
+        ilog("start block -> ${b}", ("b", start_block));
         request_blocks(start_block, positions);
     }
 

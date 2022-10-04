@@ -442,6 +442,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
     template <typename GetBlockResult, typename HandleBlocksTracesDelta>
     bool process_blocks_result(GetBlockResult& result, HandleBlocksTracesDelta&& handler) {
         if (!result.this_block)
+            ilog("this block is null");
             return true;
         bool bulk         = result.this_block->block_num + 4 < result.last_irreversible.block_num;
         bool large_deltas = false;
@@ -456,22 +457,24 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
         }
 
         if (config->stop_before && result.this_block->block_num >= config->stop_before) {
-            close_streams();
             ilog("block ${b}: stop requested", ("b", result.this_block->block_num));
+            close_streams();
             return false;
         }
 
         if (result.this_block->block_num <= head) {
-            close_streams();
             ilog("switch forks at block ${b}", ("b", result.this_block->block_num));
+            close_streams();
             bulk  = false;
             forks = true;
         }
 
         if (!bulk || large_deltas || !(result.this_block->block_num % 200))
             close_streams();
-        if (table_streams.empty())
+        if (table_streams.empty()){
+            ilog("trim");
             trim();
+        }
         if (!bulk)
             ilog("block ${b}", ("b", result.this_block->block_num));
 

@@ -220,7 +220,9 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
         pipeline.complete();
         t.commit();
 
-        connection->request_blocks(status, std::max(config->skip_to, head + 1), positions);
+        auto request_block = std::max(config->skip_to, head + 1);
+        ilog("request block -> ${b}", ("b", request_block));
+        connection->request_blocks(status, request_block, positions);
         return true;
     }
 
@@ -256,6 +258,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
         }
 
         t.commit();
+        ilog("scheme created");
     } // create_tables()
 
     void create_trim() {

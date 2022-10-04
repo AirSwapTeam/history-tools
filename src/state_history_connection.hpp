@@ -146,7 +146,10 @@ struct connection : std::enable_shared_from_this<connection> {
             nodeos_start = std::min(nodeos_start, status.chain_state_begin_block);
         if (nodeos_start == 0xffff'ffff)
             nodeos_start = 0;
-        request_blocks(std::max(start_block_num, nodeos_start), positions);
+
+        auto start_block = std::max(start_block_num, nodeos_start);
+        ilog("start block -> ${b}", ("b", start_block)))
+        request_blocks(start_block, positions);
     }
 
     void send(const eosio::ship_protocol::request& req) {

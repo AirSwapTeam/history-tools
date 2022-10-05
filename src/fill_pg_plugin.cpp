@@ -599,6 +599,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
     }
 
     void receive_deltas(uint32_t block_num, eosio::opaque<std::vector<eosio::ship_protocol::table_delta>> delta, bool bulk) {
+        ilog("${b} receive delta", ("b", block_num));
         for_each(delta, [this, block_num, bulk](table_delta&& t_delta) { write_table_delta(block_num, std::move(t_delta), bulk); });
     }
 
@@ -644,6 +645,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
     }
 
     void receive_traces(uint32_t block_num, eosio::opaque<std::vector<eosio::ship_protocol::transaction_trace>> traces) {
+        ilog("${b} receive traces", ("b", block_num));
         auto     bin = traces.get();
         uint32_t num;
         varuint32_from_bin(num, bin);

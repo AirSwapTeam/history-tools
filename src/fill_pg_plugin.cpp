@@ -441,9 +441,11 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
 
     template <typename GetBlockResult, typename HandleBlocksTracesDelta>
     bool process_blocks_result(GetBlockResult& result, HandleBlocksTracesDelta&& handler) {
-        if (!result.this_block)
+        if (!result.this_block){
+
             ilog("this block is null");
             return true;
+        }
         bool bulk         = result.this_block->block_num + 4 < result.last_irreversible.block_num;
         bool large_deltas = false;
         bool forks        = false;
@@ -575,9 +577,10 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
 
     void close_streams() {
         ilog("close streams");
-        if (table_streams.empty())
+        if (table_streams.empty()){
             ilog("table streams is empty");
             return;
+        }
         flush_streams();
 
         work_t     t(*sql_connection);

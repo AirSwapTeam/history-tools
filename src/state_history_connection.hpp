@@ -176,7 +176,7 @@ struct connection : std::enable_shared_from_this<connection> {
 
     template <typename F>
     void enter_callback(error_code ec, const char* what, F f) {
-        ilog("enter callback -> ${c}", ("c", ec));
+        ilog("enter callback");
         if (ec)
             return on_fail(ec, what);
         catch_and_close(f);

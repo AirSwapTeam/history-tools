@@ -478,7 +478,7 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
             trim();
         }
         if (!bulk)
-            ilog("block ${b}", ("b", result.this_block->block_num));
+            ilog("block ${b} bulk=false", ("b", result.this_block->block_num));
 
         work_t     t(*sql_connection);
         pipeline_t pipeline(t);
@@ -602,8 +602,9 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
     }
 
     void receive_deltas(uint32_t block_num, eosio::opaque<std::vector<eosio::ship_protocol::table_delta>> delta, bool bulk) {
-        ilog("${b} receive delta", ("b", block_num));
+        ilog("${b} receive deltas", ("b", block_num));
         for_each(delta, [this, block_num, bulk](table_delta&& t_delta) { write_table_delta(block_num, std::move(t_delta), bulk); });
+        ilog("${b} deltas done", ("b", block_num));
     }
 
     void write_table_delta(uint32_t block_num, table_delta&& t_delta, bool bulk) {
@@ -611,8 +612,10 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
             [&block_num, bulk, this](auto t_delta) {
                 size_t num_processed = 0;
                 auto&  type          = get_type(t_delta.name);
-                if (type.as_variant() == nullptr && type.as_struct() == nullptr)
+                if (type.as_variant() == nullptr && type.as_struct() == nullptr){
+                    ilog("don't know how to process ${n}", ("n", t_delta.name));
                     throw std::runtime_error("don't know how to process " + t_delta.name);
+                }
 
                 for (auto& row : t_delta.rows) {
                     if (t_delta.rows.size() > 10000 && !(num_processed % 10000))
@@ -636,12 +639,13 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
                         }
                     }
 
+                    ++num_processed;
                     if (!save){
 
                         continue;
                     }
+                    ilog("${b} write streams ${n}", ("b", block_num)("n", t_delta.name));
                     write_stream(block_num, t_delta.name, values);
-                    ++num_processed;
                 }
             },
             t_delta);

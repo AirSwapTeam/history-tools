@@ -633,14 +633,14 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
                     std::vector<std::string> values{std::to_string(block_num), std::to_string((unsigned)row.present)};
                     if (type.as_variant()){
 
-                        ilog("covert sql variant");
+//                        ilog("covert sql variant");
                         converter.to_sql_values(row.data, t_delta.name, *type.as_variant(), values);
-                        ilog("cover variant sql done");
+//                        ilog("cover variant sql done");
                     }else if (type.as_struct()){
 
-                        ilog("covert sql struct");
+//                        ilog("covert sql struct");
                         converter.to_sql_values(row.data, *type.as_struct(), values);
-                        ilog("cover struct sql done");
+//                        ilog("cover struct sql done");
                     }
 
                     bool save = false;

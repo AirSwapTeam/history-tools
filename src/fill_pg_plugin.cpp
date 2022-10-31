@@ -610,6 +610,8 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
     void write_table_delta(uint32_t block_num, table_delta&& t_delta, bool bulk) {
         std::visit(
             [&block_num, bulk, this](auto t_delta) {
+
+                ilog("${b} write streams -> ${n}", ("b", block_num)("n", t_delta.name));
                 // 不处理
                 if (t_delta.name == "global_property"){
                     return;
@@ -656,7 +658,6 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
 
                         continue;
                     }
-                    ilog("${b} write streams ${n}", ("b", block_num)("n", t_delta.name));
                     write_stream(block_num, t_delta.name, values);
                 }
             },

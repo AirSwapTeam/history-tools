@@ -612,11 +612,13 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
             [&block_num, bulk, this](auto t_delta) {
                 size_t num_processed = 0;
                 auto&  type          = get_type(t_delta.name);
+                ilog("delta name -> ${n}", ("n", t_delta.name));
                 if (type.as_variant() == nullptr && type.as_struct() == nullptr){
                     ilog("don't know how to process ${n}", ("n", t_delta.name));
                     throw std::runtime_error("don't know how to process " + t_delta.name);
                 }
 
+                ilog("begin foreach");
                 for (auto& row : t_delta.rows) {
                     if (t_delta.rows.size() > 10000 && !(num_processed % 10000))
                         ilog(
@@ -624,10 +626,17 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
                             ("b", block_num)("t", t_delta.name)("n", num_processed)("r", t_delta.rows.size())("bulk", bulk));
 
                     std::vector<std::string> values{std::to_string(block_num), std::to_string((unsigned)row.present)};
-                    if (type.as_variant())
+                    if (type.as_variant()){
+
+                        ilog("covert sql variant");
                         converter.to_sql_values(row.data, t_delta.name, *type.as_variant(), values);
-                    else if (type.as_struct())
+                        ilog("cover variant sql done")
+                    }else if (type.as_struct()){
+
+                        ilog("covert sql struct");
                         converter.to_sql_values(row.data, *type.as_struct(), values);
+                        ilog("cover struct sql done")
+                    }
 
                     bool save = false;
                     for (auto& account : account_filters){

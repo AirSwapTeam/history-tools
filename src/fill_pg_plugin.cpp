@@ -612,7 +612,8 @@ struct fpg_session : connection_callbacks, std::enable_shared_from_this<fpg_sess
             [&block_num, bulk, this](auto t_delta) {
                 size_t num_processed = 0;
                 auto&  type          = get_type(t_delta.name);
-                ilog("delta name -> ${n}", ("n", t_delta.name));
+                ilog("delta name -> ${n} type -> ${t}", ("n", t_delta.name)("t", type));
+
                 if (type.as_variant() == nullptr && type.as_struct() == nullptr){
                     ilog("don't know how to process ${n}", ("n", t_delta.name));
                     throw std::runtime_error("don't know how to process " + t_delta.name);
